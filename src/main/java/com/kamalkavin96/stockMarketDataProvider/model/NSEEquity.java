@@ -32,6 +32,4 @@ public class NSEEquity {
     private String isinNumber;
     @Column(name = "face_value", nullable = false)
     private int faceValue;
-    @Column(name = "issued_size", nullable = false)
-    private Long issuedSize;
 }
