@@ -57,4 +57,4 @@ build/
 
 ### VS Code ###
 .vscode/
->>>>>>> 4496818 (initial commit)
+.env
