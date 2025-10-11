@@ -39,6 +39,7 @@ public class NSEEquityClassificationController {
 
     @GetMapping("/sectors")
     public  List<NSESector> getNseSectorsMapping(){
+
         return nseSectorService.getAllSectors();
     }
 

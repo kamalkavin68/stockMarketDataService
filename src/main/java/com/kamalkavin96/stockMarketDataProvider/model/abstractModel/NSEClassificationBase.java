@@ -18,9 +18,9 @@ public abstract class NSEClassificationBase {
     @Column
     private String description;
 
-    @Column
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    @Column
+    @Column(name = "logo_name")
     private String logoName;
 }
