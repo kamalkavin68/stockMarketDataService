@@ -1,5 +1,6 @@
 package com.kamalkavin96.stockMarketDataProvider.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "nseequity_v1")
+@Entity(name = "nse_equity_v1")
 public class NSEEquity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,4 +33,10 @@ public class NSEEquity {
     private String isinNumber;
     @Column(name = "face_value", nullable = false)
     private int faceValue;
+
+    @OneToOne(mappedBy = "equity", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private NSEEquityClassification classification;
+
+
 }

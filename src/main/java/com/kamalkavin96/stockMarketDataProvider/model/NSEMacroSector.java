@@ -20,5 +20,8 @@ public class NSEMacroSector extends NSEClassificationBase {
     @JsonManagedReference
     private List<NSESector> sectors;
 
+    @OneToMany(mappedBy = "macroSector", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<NSEEquityClassification> equityClassifications;
 
 }
