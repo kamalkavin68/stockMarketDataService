@@ -20,5 +20,5 @@ public interface NSEEquityRepo extends JpaRepository<NSEEquity, Long> {
             nativeQuery = true
     )
     List<NSEEquity> searchBySymbolPrefix(@Param("prefix") String prefix);
-    
+
 }
