@@ -34,9 +34,4 @@ public class NSEEquity {
     @Column(name = "face_value", nullable = false)
     private int faceValue;
 
-    @OneToOne(mappedBy = "equity", cascade = CascadeType.ALL)
-    @JsonBackReference
-    private NSEEquityClassification classification;
-
-
 }

@@ -38,7 +38,11 @@ public class NSEEquityController {
 
     @GetMapping("/get-equity/{symbol}")
     public NSEEquity getNSEEquityBySymbolMapping(@PathVariable String symbol){
-        return new NSEEquity();
+        return nseEquityService.getNseEquityMeta(symbol);
     }
 
+    @GetMapping("/search-equity/{symbol}")
+    public List<NSEEquity> getSearchNSEEquityBySymbolMapping(@PathVariable String symbol){
+        return nseEquityService.searchEquity(symbol);
+    }
 }

@@ -17,8 +17,11 @@ public class NSEEquityService {
         return nseEquityRepo.findAll();
     }
 
-    public NSEEquity getNseEquityBySymbol(String symbol){
-        Optional<NSEEquity> nseEquity =  nseEquityRepo.findBySymbol(symbol).orElseThrow();
+    public NSEEquity getNseEquityMeta(String symbol){
+        return nseEquityRepo.findBySymbol(symbol).orElse(null);
+    }
 
+    public List<NSEEquity> searchEquity(String symbol){
+        return nseEquityRepo.searchBySymbolPrefix(symbol);
     }
 }
