@@ -25,14 +25,6 @@ public class NSEEquityController {
 
     @GetMapping("/equity-list")
     public List<NSEEquity> getNSEEquityListMapping(HttpServletRequest request){
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()){
-            String headerName = headerNames.nextElement();
-            String headerValue = request.getHeader(headerName);
-            logger.info("Header: {} = {}", headerName, headerValue);
-        }
-        logger.info("");
-        logger.info("Processing getNSEEquityListMapping GET Request");
         return nseEquityService.getNseEquityList();
     }
 
