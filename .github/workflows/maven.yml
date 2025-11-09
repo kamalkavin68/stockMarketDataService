@@ -1,0 +1,111 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build and test (Java ${{ matrix.java-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [11, 17]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java-version }}
+          cache: 'maven'
+
+      - name: Verify Java
+        run: java -version
+
+      - name: Build and run tests with Maven
+        run: mvn -B -V -e -T 1C verify
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports-${{ matrix.java-version }}
+          path: |
+            target/surefire-reports
+            target/failsafe-reports
+
+      - name: Upload built JAR
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-jar-${{ matrix.java-version }}
+          path: |
+            target/*.jar
+
+  publish_to_hf:
+    name: Publish JAR to Hugging Face
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ secrets.HF_TOKEN != '' && secrets.HF_REPO != '' }}
+    env:
+      HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      HF_REPO: ${{ secrets.HF_REPO }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK (for packaging)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build package (skip tests)
+        run: mvn -B -V -e -T 1C package -DskipTests
+
+      - name: Push built JAR to Hugging Face repo
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO: ${{ secrets.HF_REPO }}
+        run: |
+          set -eux
+          JAR_PATH=$(ls target/*.jar | head -n 1)
+          echo "Found JAR: $JAR_PATH"
+          mkdir hf_push
+          cp "$JAR_PATH" hf_push/
+          cd hf_push
+          git init
+          git checkout -b main || true
+          git add .
+          git -c user.email="action@github.com" -c user.name="github-actions" commit -m "Add built jar from GitHub Actions run $GITHUB_RUN_ID" || true
+          HF_REMOTE="https://hf:$HF_TOKEN@huggingface.co/$HF_REPO.git"
+          git remote add hf "$HF_REMOTE" || true
+          # Try pushing; if remote doesn't exist create via API then push
+          if git push hf main --force; then
+            echo "Pushed artifact to Hugging Face repo"
+          else
+            echo "Remote push failed - attempting to create repo via API and push again"
+            REPO_FULL="$HF_REPO"
+            if echo "$REPO_FULL" | grep -q '/'; then
+              NAMESPACE=$(echo "$REPO_FULL" | cut -d'/' -f1)
+              REPO_NAME=$(echo "$REPO_FULL" | cut -d'/' -f2)
+              curl -s -X POST "https://huggingface.co/api/repos/create" \
+                -H "Authorization: Bearer $HF_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d "{\"name\":\"$REPO_NAME\",\"private\":false,\"organization\":\"$NAMESPACE\"}" || true
+            else
+              REPO_NAME="$REPO_FULL"
+              curl -s -X POST "https://huggingface.co/api/repos/create" \
+                -H "Authorization: Bearer $HF_TOKEN" \
+                -H "Content-Type: application/json" \
+                -d "{\"name\":\"$REPO_NAME\",\"private\":false}" || true
+            fi
+            git push hf main --force
+          fi
