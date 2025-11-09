@@ -21,4 +21,16 @@ public interface NSEEquityRepo extends JpaRepository<NSEEquity, Long> {
     )
     List<NSEEquity> searchBySymbolPrefix(@Param("prefix") String prefix);
 
+    @Query(
+            value = "SELECT e.* " +
+                    "FROM nse_equity_v1 AS e " +
+                    "INNER JOIN nse_equity_classification_v1 AS nec " +
+                    "ON nec.equity_id = e.id " +
+                    "INNER JOIN nse_macro_sectors_v1 AS nms " +
+                    "ON nms.id = nec.macro_sector_id " +
+                    "WHERE nec.macro_sector_id = :macroSectorId",
+            nativeQuery = true
+    )
+    List<NSEEquity> findEquityForMacroSector(Integer macroSectorId);
+
 }

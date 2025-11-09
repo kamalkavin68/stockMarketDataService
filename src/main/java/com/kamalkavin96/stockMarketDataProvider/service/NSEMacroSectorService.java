@@ -27,5 +27,4 @@ public class NSEMacroSectorService {
         nseMacroSectorRepo.findById(macroSectorId).orElseThrow(() -> new NotFoundException("Macro-Sector not found with ID: "+macroSectorId));
         return nseSectorRepo.findSectorsByMacroSectorId(macroSectorId);
     }
-
 }

@@ -41,4 +41,9 @@ public class NSEEquityController {
     public ResponseEntity<List<NSEEquity>> getSearchNSEEquityBySymbolMapping(@PathVariable String symbol){
         return ResponseEntity.status(HttpStatus.OK).body(nseEquityService.searchEquity(symbol));
     }
+
+    @GetMapping("/get-equity-macro-sector/{macroSectorId}")
+    public ResponseEntity<List<NSEEquity>> getNSEEquityForMacroSector(@PathVariable Integer macroSectorId){
+        return ResponseEntity.status(HttpStatus.OK).body(nseEquityService.findAllEquityUNderMacroSector(macroSectorId));
+    }
 }

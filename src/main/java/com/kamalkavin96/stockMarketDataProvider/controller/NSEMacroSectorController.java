@@ -29,4 +29,6 @@ public class NSEMacroSectorController {
     public  ResponseEntity<List<NSESector>> getAllSectors(@PathVariable Integer macroSectorId){
         return ResponseEntity.status(HttpStatus.OK).body(nseMacroSectorService.getAllSectorForMacroSector(macroSectorId));
     }
+
+
 }
