@@ -4,11 +4,17 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "nse_macro_sectors_v1")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class NSEMacroSector {
 
     @Id

@@ -4,11 +4,17 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "nse_basic_industries_v1")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class NSEBasicIndustries {
 
     @Id
