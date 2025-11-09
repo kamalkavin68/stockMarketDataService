@@ -16,4 +16,6 @@ public class NSEIndustriesService {
     public List<NSEIndustries> getAllIndustries() {
         return nseIndustriesRepo.findAll();
     }
+
+
 }
