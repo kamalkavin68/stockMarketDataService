@@ -25,6 +25,12 @@ jobs:
       - name: Build with Maven
         run: mvn -B clean package
 
+      - name: Rename generated JAR to appstock.jar
+        run: |
+          ORIGINAL_JAR=$(ls target/*.jar | head -n 1)
+          echo "Found JAR: $ORIGINAL_JAR"
+          mv "$ORIGINAL_JAR" target/appstock.jar
+
       - name: Upload appstock.jar
         uses: actions/upload-artifact@v4
         with:
