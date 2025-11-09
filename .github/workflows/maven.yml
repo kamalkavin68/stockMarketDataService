@@ -18,21 +18,28 @@ jobs:
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '17'
-          cache: 'maven'
+          distribution: temurin
+          java-version: 17
+          cache: maven
 
       - name: Build with Maven
         run: mvn -B clean package
 
-      - name: Rename generated JAR to appstock.jar
+      - name: Rename JAR to appstock.jar
         run: |
           ORIGINAL_JAR=$(ls target/*.jar | head -n 1)
           echo "Found JAR: $ORIGINAL_JAR"
           mv "$ORIGINAL_JAR" target/appstock.jar
 
-      - name: Upload appstock.jar
-        uses: actions/upload-artifact@v4
-        with:
-          name: appstock-jar
-          path: target/appstock.jar
+      - name: Upload to HuggingFace Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          git clone https://huggingface.co/spaces/kamalkavin96/jarRunnner space_repo
+          cp target/appstock.jar space_repo/appstock.jar
+          cd space_repo
+          git config user.email "github-actions@github.com"
+          git config user.name "github-actions"
+          git add appstock.jar
+          git commit -m "Update JAR from GitHub Actions"
+          git push https://kavinkavin:${HF_TOKEN}@huggingface.co/spaces/kamalkavin96/jarRunnner
