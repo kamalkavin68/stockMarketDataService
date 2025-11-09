@@ -3,6 +3,8 @@ package com.kamalkavin96.stockMarketDataProvider.controller;
 import com.kamalkavin96.stockMarketDataProvider.model.NSESector;
 import com.kamalkavin96.stockMarketDataProvider.service.NSESectorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +19,7 @@ public class NSESectorController {
     NSESectorService nseSectorService;
 
     @GetMapping("/get-all")
-    public List<NSESector> getAllSectorMapping(){
-        return nseSectorService.getAllSectors();
+    public ResponseEntity<List<NSESector>> getAllSectorMapping(){
+        return ResponseEntity.status(HttpStatus.OK).body(nseSectorService.getAllSectors());
     }
 }
