@@ -24,6 +24,7 @@ public class NSEEquityController {
     @Autowired
     NSEEquityService nseEquityService;
 
+
     private final Logger logger = LoggerFactory.getLogger(NSEEquityController.class);
 
     @GetMapping("/equity-list")
